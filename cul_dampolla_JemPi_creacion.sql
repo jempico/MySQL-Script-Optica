@@ -1,7 +1,10 @@
-CREATE DATABASE cul_dampolla_JemPi;
+DROP DATABASE IF EXISTS cul_dampolla_JemPi;
+CREATE DATABASE cul_dampolla_JemPi CHARACTER SET utf8mb4;
 USE cul_dampolla_JemPi;
 
 -- CREATING TABLES
+-- Proveidor
+
 CREATE TABLE `proveidor` (
   `id_proveidor` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `nom` varchar(25) NOT NULL,
@@ -13,7 +16,7 @@ CREATE TABLE `proveidor` (
   `ciutat` VARCHAR(25)
 );
 
-
+-- Client
 CREATE TABLE `client` (
   `id_client` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `nom` varchar(25),
@@ -28,27 +31,31 @@ CREATE TABLE `client` (
   `recomanat_per` int
 );
 
-
+-- Muntura
 CREATE TABLE `muntura` (
   `id_muntura` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
 	`tipus` ENUM('pasta', 'flotant', 'metàlica')
 );  
 
+-- Color Muntura
 CREATE TABLE `color_muntura` (
   `id_color_muntura` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `color` VARCHAR(20)
 );
 
+-- Color Vidre
 CREATE TABLE `color_vidre` (
   `id_color_vidre` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `color` VARCHAR(20)
 );
 
+-- Empleat
 CREATE TABLE `empleat` (
   `id_empleat` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `nom` VARCHAR(25)
 );
 
+-- Producte
 CREATE TABLE `producte` (
   `id_producte` varchar(50) PRIMARY KEY  NOT NULL UNIQUE,
   `marca` varchar(25) NOT NULL,
@@ -56,10 +63,10 @@ CREATE TABLE `producte` (
   `id_color_muntura` INT,
   `id_color_vidre` INT,
   `preu` float,
-  `id_proveidor` int,
-
+  `id_proveidor` int
 );
 
+-- Comanda
 CREATE TABLE `comanda` (
   `id_comanda` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `id_client` int,
@@ -69,6 +76,7 @@ CREATE TABLE `comanda` (
   `id_empleat` INT
 );
 
+-- Producte_processat
 CREATE TABLE `producte_processat` (
   `id_producte` varchar(50) NOT NULL,
   `id_comanda` int NOT NULL,
@@ -77,7 +85,6 @@ CREATE TABLE `producte_processat` (
   `preu_unitari` float,
   PRIMARY KEY (`id_producte`, `id_comanda`)
 );
-
 
 
 -- ADDING FOREIGN KEYS
@@ -103,25 +110,79 @@ ALTER TABLE `producte_processat` ADD FOREIGN KEY (`id_comanda`) REFERENCES `coma
 
 -- INSERTING DATA
 
+-- Client
 INSERT INTO client (nom, cognoms, telf, ciutat) VALUES ('Tomas', 'Rodriguez Blanco', '935647896', 'Barcelona'), ('Maria', 'Carmona Lopez', '935647896', 'Barcelona'), ('Estel', 'Duran Blasco', '935646596', 'Barcelona'),('Eloi', 'Bayo Pico', '935647865', 'Badalona'),('Lenka', 'Jaraba Guim', '935127890', 'Girona');
+
 INSERT INTO client (nom, cognoms, adreca, email, codi_postal, ciutat, recomanat_per) VALUES ('Biel', 'Martínez Closas', 'c/ Cardener 9 2-1', 'bclosas@gmail.com', '08024', 'Barcelona', 1), ('Mel', 'Ruiz Casadesús', 'c/ La Granja 9 2-1', 'mruiz@gmail.com', '08020', 'Barcelona', 3),  ('Lisa', 'McCarthy Finn', 'c/ Dublin 9 2-1', 'lfinn@gmail.com', '08015', 'Badalona', 3), ('James', 'Augustine Joyce', 'c/ Dublin 9 2-1', 'jamesjoyces@gmail.com', '08015', 'Badalona', 3);
 
-
+-- Color Muntura
 INSERT INTO color_muntura (color) VALUES ('negre'), ('daurat'), ('vermell'), ('plata'), ('verd'), ('lila'), ('multicolor'), ('marro'), ('gris'),('transparent');
+
+-- Color Vidre
 INSERT INTO color_vidre (color) VALUES ('groc'), ('daurat'), ('taronja'), ('vermell'), ('plata'), ('blau'), ('lila'), ('multicolor'), ('marro'), ('gris'),('transparent');
+
+-- Muntura
 INSERT INTO muntura (tipus) VALUES ('pasta'), ('flotant'), ('metalica');
+
+-- Proveidor
 INSERT INTO proveidor (nom, telf, nif, codi_postal, ciutat) VALUES ('Prosun Optica', 913456789, 'B9153252N', 41001, 'Sevilla'),  ('Macrostocks', 933456789, 'Y9153252L', 08001, 'Barcelona') , ('Vistaoptica', 913567119, 'B9153252T', 28005, 'Madrid');
+
+-- Empleat
 INSERT INTO empleat (nom) VALUES ('Esther'), ('Alan'), ('Teo'), ('Júlia'), ('Rafa');
+
+-- Producte
 INSERT INTO producte (id_producte, marca, id_muntura, id_color_muntura, id_color_vidre, preu, id_proveidor) 
 VALUES ('JC4340601', 'Jimmy Choo', 1, 6, 11, 154.50, 1),('JC0340606', 'Jimmy Choo', 1, 5, 7, 144.50, 1),('JC4340602', 'Jimmy Choo', 1, 3, 10, 134.50, 1), ('RB1340602', 'Ray-ban', 1, 1, 2, 89.00, 3),('RB2340603', 'Ray-ban', 2, 1, 2, 99.00, 3), ('RB5340606', 'Ray-ban', 3, 1, 2, 95.00, 3), ('OA1340609', 'Oakley', 2, 3, 1, 84.90, 3), ('PO1113406U', 'Polaroid', 3, 5, 1, 94.50, 3), ('PO223406U', 'Polaroid', 3, 6, 2, 99.50, 3), ('PE1134060','Persol', 1, 7, 4, 129.50, 2), ('PE5134060', 'Persol', 1, 8, 5, 115.50, 2),('PE7134060' , 'Persol', 2, 10, 9, 139.00, 2),('AR81134068', 'Arnette', 2, 10, 5, 169.00, 2);
 
 
+-- INSERTING ORDER 1 
 INSERT INTO comanda (id_client, id_empleat) VALUES (1, 3);
 
-SELECT * FROM producte;
+INSERT INTO producte_processat VALUES
+	('JC4340601', LAST_INSERT_ID(), 0.5, 1, 154.50),
+    ('RB2340603', LAST_INSERT_ID(), 0.5, 1, 99.0);
 
-INSERT INTO producte (id_producte, marca, id_muntura, id_color_muntura, id_color_vidre, preu, id_proveidor) 
-VALUES ('AR81134068', 'Arnette', 2, 10, 5, 169.00, 2);
+UPDATE comanda SET preu_final = 
+		(SELECT SUM(preu_unitari * quantitat) 
+        FROM producte_processat
+		WHERE id_comanda = LAST_INSERT_ID())
+WHERE id_comanda = LAST_INSERT_ID();
 
-INSERT INTO producte (id_producte, marca, id_muntura, id_color_muntura, id_color_vidre, preu, id_proveidor) 
-VALUES ('AR81134black', 'Arnette', 1, 2, 5, 169.00, 2);
+
+-- INSERTING ORDER 2 
+INSERT INTO comanda (id_client, id_empleat) VALUES (3, 2);
+
+INSERT INTO producte_processat VALUES
+	('OA1340609', LAST_INSERT_ID(), 1.5, 2, 84.9);
+
+UPDATE comanda SET preu_final = 
+		(SELECT SUM(preu_unitari * quantitat) 
+        FROM producte_processat
+		WHERE id_comanda = LAST_INSERT_ID())
+WHERE id_comanda = LAST_INSERT_ID();
+
+-- INSERTING ORDER 3 
+INSERT INTO comanda (id_client, id_empleat) VALUES (4, 1);
+
+INSERT INTO producte_processat VALUES 
+	('PO223406U', LAST_INSERT_ID(), 0.75, 1, 99.5),
+	('JC4340601', LAST_INSERT_ID(), 0.75, 1, 154.5),
+	('PE7134060', LAST_INSERT_ID(), 0, 1, 139);
+    
+UPDATE comanda SET preu_final = 
+		(SELECT SUM(preu_unitari * quantitat) 
+        FROM producte_processat
+		WHERE id_comanda = LAST_INSERT_ID())
+WHERE id_comanda = LAST_INSERT_ID();
+
+-- INSERTING ORDER 4 
+INSERT INTO comanda (id_client, id_empleat) VALUES (2, 4);
+
+INSERT INTO producte_processat VALUES 
+	('PO223406U', LAST_INSERT_ID(), 0.15, 1, 99.5);
+    
+UPDATE comanda SET preu_final = 
+		(SELECT SUM(preu_unitari * quantitat) 
+        FROM producte_processat
+		WHERE id_comanda = LAST_INSERT_ID())
+WHERE id_comanda = LAST_INSERT_ID();
