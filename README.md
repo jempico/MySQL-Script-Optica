@@ -11,5 +11,6 @@ Para definir el tipo de ID de producto, atributos y entidades relacionadas, he m
 - Una ID de producto de una marca se asocia a una combinación espefícia de montura, color de montura y cristales. Cualquier variación en alguno de estos atributos se traduce en una ID de producto diferente.
 - El enunciado requería una relación uno-muchos entre proveedor y producto. Esta relación se establece a través de la entidad marca (cada marca puede tener diferentes productos, pero una marca solo se puede asociar a un proveedor). 
 - Para evitar productos duplicados en la entidad producto, se establece como clave primaria únicamente la id de producto.
+- 'Muntura', 'Color_Muntura' y 'Color_vidre' son tratados como entidades para facilitar la incorporación de nuevas variantes, así como tener un registro estructurado de las mismas.
 
 
